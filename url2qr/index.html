@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR코드</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      :root{--bg1:#fff8ee;--bg2:#f4f7ff;--bg3:#fff0f6;--text:#203047;--muted:#6d7c90}
+      *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:Inter,Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--text);background:radial-gradient(900px circle at var(--mx,50%) var(--my,20%), rgba(124,124,255,.26), transparent 35%),radial-gradient(700px circle at calc(var(--mx,50%) + 18%) calc(var(--my,20%) + 10%), rgba(255,123,176,.20), transparent 32%),linear-gradient(135deg,var(--bg1),var(--bg2) 48%,var(--bg3));display:grid;place-items:center;padding:24px;overflow-x:hidden}
+      .noise{position:fixed;inset:0;pointer-events:none;opacity:.04;background-image:radial-gradient(#203047 .7px, transparent .7px);background-size:18px 18px}
+      .panel{width:min(760px,100%);background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.72);backdrop-filter:blur(18px);border-radius:32px;box-shadow:0 22px 60px rgba(56,76,110,.12);padding:26px;position:relative;z-index:1}
+      .top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.back{color:var(--text);text-decoration:none;font-weight:700}
+      h1{margin:0;text-align:center;letter-spacing:-.055em;font-size:clamp(2rem,4vw,3.4rem)} p{margin:12px auto 24px;max-width:44rem;text-align:center;color:var(--muted);line-height:1.65}
+      .input-card{background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.7);border-radius:28px;padding:18px;box-shadow:0 18px 40px rgba(56,76,110,.08)}
+      .row{display:flex;gap:12px} input{flex:1;border:1px solid rgba(109,124,144,.18);background:#fff;border-radius:18px;padding:16px 18px;font-size:1rem;outline:none} button{border:0;border-radius:18px;padding:15px 20px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#7c7cff,#5d9bff 50%,#ff7bb0)}
+      .qr-box{margin-top:20px;display:grid;place-items:center}.qr-card{width:min(320px,82vw);aspect-ratio:1;background:#fff;border-radius:28px;border:1px solid rgba(255,255,255,.7);box-shadow:0 24px 60px rgba(56,76,110,.16);padding:18px;display:grid;place-items:center;cursor:pointer}.hint{margin-top:12px;color:var(--muted);text-align:center}
+      .hidden-canvas{display:none}
+      @media (max-width:700px){.row{flex-direction:column}button{width:100%}}
+    </style>
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="panel">
+      <div class="top"><a class="back" href="../index.html">← 뒤로</a><div></div></div>
+      <h1>QR코드</h1>
+      <p>URL을 입력하고 확인을 누르면 QR코드가 생성됩니다. QR 이미지를 클릭하면 JPG로 저장됩니다.</p>
+      <div class="input-card">
+        <div class="row">
+          <input id="urlInput" type="url" placeholder="https://example.com" autocomplete="off" />
+          <button id="createBtn">확인</button>
+        </div>
+      </div>
+      <div class="qr-box">
+        <div class="qr-card" id="qrCard" title="클릭하면 JPG로 다운로드됩니다."></div>
+        <div class="hint">QR 코드를 클릭하면 JPG로 저장됩니다.</div>
+      </div>
+    </div>
+    <canvas id="exportCanvas" class="hidden-canvas" width="1200" height="1200"></canvas>
+    <script>
+      const input=document.getElementById('urlInput'),button=document.getElementById('createBtn'),qrCard=document.getElementById('qrCard'),exportCanvas=document.getElementById('exportCanvas');
+      const sanitize=v=>{const t=v.trim();if(!t)return'';return /^https?:\/\//i.test(t)?t:'https://'+t};
+      function renderQR(text){qrCard.innerHTML='';new QRCode(qrCard,{text,width:280,height:280,colorDark:'#16233a',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H})}
+      function downloadJpg(){const canvas=qrCard.querySelector('canvas');if(!canvas)return;const ctx=exportCanvas.getContext('2d');exportCanvas.width=1200;exportCanvas.height=1200;ctx.fillStyle='#fff';ctx.fillRect(0,0,1200,1200);const img=new Image();img.onload=()=>{ctx.drawImage(img,120,120,960,960);const a=document.createElement('a');a.href=exportCanvas.toDataURL('image/jpeg',.96);a.download='qr-code.jpg';a.click()};img.src=canvas.toDataURL('image/png')}
+      button.addEventListener('click',()=>{const url=sanitize(input.value);if(!url)return;renderQR(url)});qrCard.addEventListener('click',downloadJpg);window.addEventListener('pointermove',e=>{document.body.style.setProperty('--mx',((e.clientX/window.innerWidth)*100)+'%');document.body.style.setProperty('--my',((e.clientY/window.innerHeight)*100)+'%')},{passive:true});
+    </script>
+  </body>
+</html>
