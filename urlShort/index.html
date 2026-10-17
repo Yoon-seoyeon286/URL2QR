@@ -50,14 +50,15 @@
       const sanitize=v=>{const t=v.trim();if(!t)return'';return /^https?:\/\//i.test(t)?t:'https://'+t};
       const toggle=()=>{shortenBtn.disabled=!urlInput.value.trim()};
       const showToast=()=>{toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1300)};
+      const displayPrefix='https://urlShort/#';
       const basePath=location.pathname.replace(/urlShort\/index\.html$/,'urlShort/');
       function makeCode(){return Math.random().toString(36).slice(2,6).toUpperCase()}
-      function buildShortCode(code){return code}
+      function buildShortCode(code){return `${displayPrefix}${code}`}
       const storeKey='urlshort-map';
       const loadMap=()=>JSON.parse(localStorage.getItem(storeKey)||'{}');
       const saveMap=(map)=>localStorage.setItem(storeKey,JSON.stringify(map));
       urlInput.addEventListener('input',()=>{toggle();copyBtn.disabled=!output.value.trim()});
-      shortenBtn.addEventListener('click',()=>{const url=sanitize(urlInput.value);if(!url)return;const code=makeCode();const map=loadMap();map[code]=url;saveMap(map);output.value=code;output.classList.add('code-display');copyBtn.disabled=false;toggle();});
+      shortenBtn.addEventListener('click',()=>{const url=sanitize(urlInput.value);if(!url)return;const code=makeCode();const map=loadMap();map[code]=url;saveMap(map);output.value=buildShortCode(code);output.classList.add('code-display');copyBtn.disabled=false;toggle();});
       copyBtn.addEventListener('click',async()=>{const text=output.value.trim();if(!text)return;await navigator.clipboard.writeText(text);showToast()});
       window.addEventListener('pointermove',e=>{document.body.style.setProperty('--mx',((e.clientX/window.innerWidth)*100)+'%');document.body.style.setProperty('--my',((e.clientY/window.innerHeight)*100)+'%')},{passive:true});
 
@@ -66,7 +67,7 @@
         const map=loadMap();
         const original=map[hash];
         if(original){
-          output.value=hash;
+          output.value=buildShortCode(hash);
           output.classList.add('code-display');
           copyBtn.disabled=false;
           const info=document.createElement('div');
