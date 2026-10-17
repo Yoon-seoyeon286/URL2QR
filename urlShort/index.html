@@ -21,6 +21,7 @@
       button:disabled{opacity:.45;cursor:not-allowed}
       .result{margin-top:18px;display:grid;gap:12px}
       .result .small{font-size:.92rem;color:var(--muted);text-align:center}
+      .code-display{font-size:1.7rem;font-weight:800;letter-spacing:.18em;text-align:center;padding:18px 16px}
       .copy-row{display:flex;justify-content:flex-end}.copy{background:linear-gradient(135deg,#36c2a8,#5d9bff)}
       .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#203047;color:#fff;padding:12px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease}.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
       .hint{margin-top:10px;color:var(--muted);font-size:.92rem}
@@ -56,7 +57,7 @@
       const loadMap=()=>JSON.parse(localStorage.getItem(storeKey)||'{}');
       const saveMap=(map)=>localStorage.setItem(storeKey,JSON.stringify(map));
       urlInput.addEventListener('input',()=>{toggle();copyBtn.disabled=!output.value.trim()});
-      shortenBtn.addEventListener('click',()=>{const url=sanitize(urlInput.value);if(!url)return;const code=makeCode();const map=loadMap();map[code]=url;saveMap(map);const shortCode=buildShortCode(code);output.value=shortCode;copyBtn.disabled=false;toggle()});
+      shortenBtn.addEventListener('click',()=>{const url=sanitize(urlInput.value);if(!url)return;const code=makeCode();const map=loadMap();map[code]=url;saveMap(map);output.value=code;output.classList.add('code-display');copyBtn.disabled=false;toggle();});
       copyBtn.addEventListener('click',async()=>{const text=output.value.trim();if(!text)return;await navigator.clipboard.writeText(text);showToast()});
       window.addEventListener('pointermove',e=>{document.body.style.setProperty('--mx',((e.clientX/window.innerWidth)*100)+'%');document.body.style.setProperty('--my',((e.clientY/window.innerHeight)*100)+'%')},{passive:true});
 
@@ -65,7 +66,8 @@
         const map=loadMap();
         const original=map[hash];
         if(original){
-          output.value=original;
+          output.value=hash;
+          output.classList.add('code-display');
           copyBtn.disabled=false;
           const info=document.createElement('div');
           info.className='small';
