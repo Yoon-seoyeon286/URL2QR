@@ -21,7 +21,7 @@
       button:disabled{opacity:.45;cursor:not-allowed}
       .result{margin-top:18px;display:grid;gap:12px}
       .result .small{font-size:.92rem;color:var(--muted);text-align:center}
-      .code-display{font-size:1.7rem;font-weight:800;letter-spacing:.18em;text-align:center;padding:18px 16px}
+      .code-display{font-size:1.05rem;font-weight:800;letter-spacing:.03em;text-align:center;padding:18px 16px}
       .copy-row{display:flex;justify-content:flex-end}.copy{background:linear-gradient(135deg,#36c2a8,#5d9bff)}
       .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#203047;color:#fff;padding:12px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease}.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
       .hint{margin-top:10px;color:var(--muted);font-size:.92rem}
@@ -51,7 +51,6 @@
       const toggle=()=>{shortenBtn.disabled=!urlInput.value.trim()};
       const showToast=()=>{toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1300)};
       const displayPrefix='https://urlShort/#';
-      const basePath=location.pathname.replace(/urlShort\/index\.html$/,'urlShort/');
       function makeCode(){return Math.random().toString(36).slice(2,6).toUpperCase()}
       function buildShortCode(code){return `${displayPrefix}${code}`}
       const storeKey='urlshort-map';
