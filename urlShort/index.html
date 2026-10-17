@@ -51,12 +51,12 @@
       const showToast=()=>{toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1300)};
       const basePath=location.pathname.replace(/urlShort\/index\.html$/,'urlShort/');
       function makeCode(){return Math.random().toString(36).slice(2,6).toUpperCase()}
-      function buildShortUrl(code){return `${location.origin}${basePath}#${code}`}
+      function buildShortCode(code){return code}
       const storeKey='urlshort-map';
       const loadMap=()=>JSON.parse(localStorage.getItem(storeKey)||'{}');
       const saveMap=(map)=>localStorage.setItem(storeKey,JSON.stringify(map));
       urlInput.addEventListener('input',()=>{toggle();copyBtn.disabled=!output.value.trim()});
-      shortenBtn.addEventListener('click',()=>{const url=sanitize(urlInput.value);if(!url)return;const code=makeCode();const map=loadMap();map[code]=url;saveMap(map);const shortUrl=buildShortUrl(code);output.value=shortUrl;copyBtn.disabled=false;toggle()});
+      shortenBtn.addEventListener('click',()=>{const url=sanitize(urlInput.value);if(!url)return;const code=makeCode();const map=loadMap();map[code]=url;saveMap(map);const shortCode=buildShortCode(code);output.value=shortCode;copyBtn.disabled=false;toggle()});
       copyBtn.addEventListener('click',async()=>{const text=output.value.trim();if(!text)return;await navigator.clipboard.writeText(text);showToast()});
       window.addEventListener('pointermove',e=>{document.body.style.setProperty('--mx',((e.clientX/window.innerWidth)*100)+'%');document.body.style.setProperty('--my',((e.clientY/window.innerHeight)*100)+'%')},{passive:true});
 
